@@ -15,9 +15,11 @@ jobs:
           go-version: '1.18.3'
       - name: Build
         run: go build
+      - name: Rename
+        run: mv adjust-excel-cell-width adjust-excel-cell-width_$(go env GOOS)_$(go env GOARCH)
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: binary
+          name: binaries
           path: adjust-excel-cell-width
           retention-days: 5 
