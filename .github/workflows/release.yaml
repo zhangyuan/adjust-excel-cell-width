@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: ['macos-12', 'ubuntu-22.04']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.18.3'
+      - name: Build
+        run: go build
+      - name: Rename
+        run: mv adjust-excel-cell-width adjust-excel-cell-width_$(go env GOOS)_$(go env GOARCH)
+      - name: Upload release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: 'adjust-excel-cell-width_*'
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
